@@ -1,0 +1,57 @@
+{
+  "name": "winston-formatted",
+  "version": "1.0.0",
+  "description": "A wrapper around the awesome winston logger",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "nodemon --exec babel-node ./examples/basic.js",
+    "lint": "eslint lib",
+    "build": "babel lib --comments=false --compact=true -o index.js",
+    "test": "echo \"This is just a custom Transport for winston, please refer to their test suite\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kevmarchant/winston-formatted.git"
+  },
+  "author": "Kev Marchant https://github.com/kevmarchant",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kevmarchant/winston-formatted/issues"
+  },
+  "homepage": "https://github.com/kevmarchant/winston-formatted#readme",
+  "dependencies": {
+    "dotenv": "^6.0.0",
+    "winston": "^3.0.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-latest": "^6.24.1",
+    "eslint": "^5.0.1",
+    "eslint-config-airbnb-base": "^13.0.0",
+    "eslint-plugin-import": "^2.13.0",
+    "nodemon": "^1.17.5"
+  },
+  "engines": {
+    "node": ">= 6.4.0"
+  },
+  "keywords": [
+    "winston",
+    "console",
+    "formatted",
+    "formatting",
+    "logger",
+    "logging",
+    "logs",
+    "loglevel",
+    "tools",
+    "json",
+    "stream"
+  ],
+  "maintainers": [
+    {
+      "name": "Kev Marchant",
+      "email": "km@mitsol.co.uk"
+    }
+  ]
+}
