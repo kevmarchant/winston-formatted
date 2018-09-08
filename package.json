@@ -4,7 +4,7 @@
   "description": "A wrapper around the awesome winston logger",
   "main": "index.js",
   "scripts": {
-    "start:dev": "nodemon ./examples/basic.js",
+    "start": "node ./examples/basic.js",
     "lint": "eslint lib",
     "test": "echo \"This is just a custom Transport for winston, please refer to their test suite\" && exit 0"
   },
