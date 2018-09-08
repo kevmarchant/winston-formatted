@@ -1,4 +1,4 @@
-import winston from '../lib';
+const winston = require('..');
 
 const log = winston.loggerFor(module);
 

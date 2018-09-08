@@ -1,12 +1,11 @@
 {
   "name": "winston-formatted",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A wrapper around the awesome winston logger",
   "main": "index.js",
   "scripts": {
-    "start:dev": "nodemon --exec babel-node ./examples/basic.js",
+    "start:dev": "nodemon ./examples/basic.js",
     "lint": "eslint lib",
-    "build": "babel lib --comments=false --compact=true -o index.js",
     "test": "echo \"This is just a custom Transport for winston, please refer to their test suite\" && exit 0"
   },
   "repository": {
@@ -24,9 +23,6 @@
     "winston": "^3.0.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-latest": "^6.24.1",
     "eslint": "^5.0.1",
     "eslint-config-airbnb-base": "^13.0.0",
     "eslint-plugin-import": "^2.13.0",

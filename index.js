@@ -1,10 +1,99 @@
-'use strict';Object.defineProperty(exports,"__esModule",{value:true});var _extends=Object.assign||function(target){for(var i=1;i<arguments.length;i++){var source=arguments[i];for(var key in source){if(Object.prototype.hasOwnProperty.call(source,key)){target[key]=source[key];}}}return target;};var _winston=require('winston');var _winston2=_interopRequireDefault(_winston);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _objectWithoutProperties(obj,keys){var target={};for(var i in obj){if(keys.indexOf(i)>=0)continue;if(!Object.prototype.hasOwnProperty.call(obj,i))continue;target[i]=obj[i];}return target;}var createLogger=_winston2.default.createLogger,transports=_winston2.default.transports,format=_winston2.default.format;var combine=format.combine,colorize=format.colorize,formatTimestamp=format.timestamp,printf=format.printf;var applyTextFormatting={bold:function bold(text){return'\x1B[1m'+text+'\x1B[0m';},dim:function dim(text){return'\x1B[2m'+text+'\x1B[0m';},underline:function underline(text){return'\x1B[4m'+text+'\x1B[0m';},blink:function blink(text){return'\x1B[5m'+text+'\x1B[0m';},black:function black(text){return'\x1B[30m'+text+'\x1B[0m';},red:function red(text){return'\x1B[31m'+text+'\x1B[0m';},green:function green(text){return'\x1B[32m'+text+'\x1B[0m';},yellow:function yellow(text){return'\x1B[33m'+text+'\x1B[0m';},blue:function blue(text){return'\x1B[34m'+text+'\x1B[0m';},magenta:function magenta(text){return'\x1B[35m'+text+'\x1B[0m';},cyan:function cyan(text){return'\x1B[36m'+text+'\x1B[0m';},white:function white(text){return'\x1B[37m'+text+'\x1B[0m';}};var _process$env=process.env,LOGGER_LEVEL=_process$env.LOGGER_LEVEL,LOGGER_WIDTH=_process$env.LOGGER_WIDTH;var defaults={level:LOGGER_LEVEL||'info',handleExceptions:true,consoleWidth:LOGGER_WIDTH||process.stdout.columns||150,levelWidth:7,moduleWidthPercentage:0.2,timestampColour:'cyan',moduleColour:'dim',seperatorColour:'yellow',messageColour:'bold',seperator:'=>'};_winston2.default.loggerFor=function(context,opts){var options=_extends({},defaults,opts);return createLogger({level:options.level,handleExceptions:options.handleExceptions,transports:[new transports.Console({format:combine(colorize(),formatTimestamp(),printf(function(_ref){var timestamp=_ref.timestamp,level=_ref.level,message=_ref.message,args=_objectWithoutProperties(_ref,['timestamp','level','message']);// timestamp
-var dateTime=timestamp.slice(0,19).replace('T',' ');// level, which is already colourised
-var lvl=level.padEnd(options.levelWidth+10);// moduleName
-var appDir=process.env.PWD.split('/');var moduleName='/'+context.filename.split('/').filter(function(part){return!appDir.includes(part);}).join('/');// message
-var formattedArgs=Object.keys(args).length?JSON.stringify(args,null,2):'';var messageAndArgs=message+' '+formattedArgs;// get fixed lengths
-var dateTimeWidth=dateTime.length;var levelWidth=options.levelWidth+10;var seperatorWidth=options.seperator.length;var spacesAndBracketsWidth=12;// calculate space left for moduleName and message
-var spacesLeft=options.consoleWidth-(dateTimeWidth+levelWidth+seperatorWidth+spacesAndBracketsWidth);var moduleWidth=Math.trunc(spacesLeft*options.moduleWidthPercentage);var messageWidth=spacesLeft-moduleWidth;// truncate moduleName if necessary, pad if necessary
-moduleName=moduleName.length>moduleWidth?'...'+moduleName.slice(-(moduleWidth-3)):moduleName;moduleName=moduleName.padEnd(moduleWidth);// truncate message if necessary, pad if necessary
-messageAndArgs=messageAndArgs.length>messageWidth?messageAndArgs.substr(0,messageWidth-3)+'...':messageAndArgs;messageAndArgs=messageAndArgs.padEnd(messageWidth);// apply colours
-var dt=applyTextFormatting[options.timestampColour](dateTime);var mod=applyTextFormatting[options.moduleColour](moduleName);var sep=applyTextFormatting[options.seperatorColour](options.seperator);var msg=applyTextFormatting[options.messageColour](messageAndArgs);return dt+' [ '+lvl+' ] [ '+mod+' ] '+sep+' '+msg;}))})]});};exports.default=_winston2.default;
+const winston = require('winston');
+const dotenv = require('dotenv');
+require('./padEnd');
+
+dotenv.config();
+
+const { createLogger, transports, format } = winston;
+const {
+  combine, colorize, timestamp: formatTimestamp, printf
+} = format;
+
+const applyTextFormatting = {
+  bold: text => `\x1b[1m${text}\x1b[0m`,
+  dim: text => `\x1b[2m${text}\x1b[0m`,
+  underline: text => `\x1b[4m${text}\x1b[0m`,
+  blink: text => `\x1b[5m${text}\x1b[0m`,
+  black: text => `\x1b[30m${text}\x1b[0m`,
+  red: text => `\x1b[31m${text}\x1b[0m`,
+  green: text => `\x1b[32m${text}\x1b[0m`,
+  yellow: text => `\x1b[33m${text}\x1b[0m`,
+  blue: text => `\x1b[34m${text}\x1b[0m`,
+  magenta: text => `\x1b[35m${text}\x1b[0m`,
+  cyan: text => `\x1b[36m${text}\x1b[0m`,
+  white: text => `\x1b[37m${text}\x1b[0m`
+};
+
+const { LOGGER_LEVEL, LOGGER_WIDTH } = process.env;
+
+const defaults = {
+  level: LOGGER_LEVEL || 'info',
+  handleExceptions: true,
+  consoleWidth: LOGGER_WIDTH || process.stdout.columns || 150,
+  levelWidth: 7,
+  moduleWidthPercentage: 0.2,
+  timestampColour: 'cyan',
+  moduleColour: 'dim',
+  seperatorColour: 'yellow',
+  messageColour: 'bold',
+  seperator: '=>'
+};
+
+winston.loggerFor = (context, opts) => {
+  const options = Object.assign({}, defaults, opts);
+  return createLogger({
+    level: options.level,
+    handleExceptions: options.handleExceptions,
+    transports: [new transports.Console({
+      format: combine(colorize(), formatTimestamp(), printf(({
+        timestamp, level, message, args
+      }) => {
+        // timestamp
+        const dateTime = timestamp.slice(0, 19).replace('T', ' ');
+
+        // level, which is already colourised
+        const lvl = level.padEnd(options.levelWidth + 10);
+
+        // moduleName
+        const appDir = process.env.PWD.split('/');
+        let moduleName = `/${context.filename.split('/').filter(part => !appDir.includes(part)).join('/')}`;
+
+        // message
+        const formattedArgs = args && Object.keys(args).length ? JSON.stringify(args, null, 2) : '';
+        let messageAndArgs = `${message} ${formattedArgs}`;
+
+        // get fixed lengths
+        const dateTimeWidth = dateTime.length;
+        const levelWidth = options.levelWidth + 10;
+        const seperatorWidth = options.seperator.length;
+        const spacesAndBracketsWidth = 12;
+
+        // calculate space left for moduleName and message
+        const spacesLeft = options.consoleWidth - (
+          dateTimeWidth + levelWidth + seperatorWidth + spacesAndBracketsWidth
+        );
+        const moduleWidth = Math.trunc(spacesLeft * options.moduleWidthPercentage);
+        const messageWidth = spacesLeft - moduleWidth;
+
+        // truncate moduleName if necessary, pad if necessary
+        moduleName = (moduleName.length > moduleWidth) ? `...${moduleName.slice(-(moduleWidth - 3))}` : moduleName;
+        moduleName = moduleName.padEnd(moduleWidth);
+
+        // truncate message if necessary, pad if necessary
+        messageAndArgs = (messageAndArgs.length > messageWidth)
+          ? `${messageAndArgs.substr(0, (messageWidth - 3))}...` : messageAndArgs;
+        messageAndArgs = messageAndArgs.padEnd(messageWidth);
+
+        // apply colours
+        const dt = applyTextFormatting[options.timestampColour](dateTime);
+        const mod = applyTextFormatting[options.moduleColour](moduleName);
+        const sep = applyTextFormatting[options.seperatorColour](options.seperator);
+        const msg = applyTextFormatting[options.messageColour](messageAndArgs);
+
+        return `${dt} [ ${lvl} ] [ ${mod} ] ${sep} ${msg}`;
+      }))
+    })]
+  });
+};
+
+module.exports = winston;
